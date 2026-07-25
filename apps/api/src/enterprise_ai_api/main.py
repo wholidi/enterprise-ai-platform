@@ -1,7 +1,7 @@
 """FastAPI application entry point."""
 
-from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 import structlog
 from fastapi import FastAPI
@@ -34,7 +34,7 @@ app = FastAPI(
     version=settings.version,
     lifespan=lifespan,
 )
-app.include_router(health.router, prefix="/health", tags=["health"])
+app.include_router(health, prefix="/health", tags=["health"])
 
 
 @app.get("/", summary="Service metadata")
