@@ -1,8 +1,7 @@
 """Health endpoint tests."""
 
-from fastapi.testclient import TestClient
-
 from enterprise_ai_api.main import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
