@@ -4,7 +4,7 @@
 
 The Enterprise AI Platform is a reference implementation for reusable enterprise agent capabilities. Week 1 establishes a dependable engineering baseline before MCP, tools, agents, RAG, evaluation, and observability are added.
 
-## Week 1 logical architecture
+## Sprint 1 logical architecture
 
 ```mermaid
 flowchart LR
@@ -24,7 +24,7 @@ flowchart LR
 3. Health endpoints support container orchestration.
 4. Static analysis and automated tests are mandatory before merging.
 5. The service runs as a non-root container user.
-6. Week 1 contains no LLM, MCP, database, or Seagate production integration.
+6. Sprint 1 contains no LLM, MCP, database, or Seagate production integration.
 
 ## Runtime flow
 

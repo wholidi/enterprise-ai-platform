@@ -1,8 +1,9 @@
 # Enterprise AI Platform
 
-A private reference implementation for building secure, observable, agentic AI applications.
+A public reference implementation for building secure, observable,
+enterprise agentic AI applications using synthetic data only.
 
-## Week 1 scope
+## Sprint 1 scope
 
 - FastAPI application baseline
 - Environment-based configuration
@@ -58,6 +59,6 @@ enterprise-ai-platform/
 └── pyproject.toml
 ```
 
-## Week 1 definition of done
+## Sprint 1 definition of done
 
 The service starts locally and in Docker, emits structured logs, passes lint/type/test checks, and exposes liveness/readiness endpoints.
