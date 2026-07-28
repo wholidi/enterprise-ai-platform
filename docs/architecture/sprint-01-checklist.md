@@ -1,4 +1,4 @@
-# Week 1 Checklist
+# Sprint 1 Checklist
 
 ## Day 1 - Repository and standards
 - [ ] Create a private Git repository.
@@ -34,7 +34,7 @@
 - [ ] Tag the baseline as `v0.1.0-week1`.
 - [ ] Record a two-minute demonstration.
 
-## Week 1 acceptance criteria
+## Sprint 1 acceptance criteria
 - Service starts locally and in Docker.
 - `/health/live` returns HTTP 200.
 - `/health/ready` returns HTTP 200.

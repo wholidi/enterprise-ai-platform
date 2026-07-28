@@ -1,6 +1,7 @@
 # Enterprise AI Platform
 
-A private reference implementation for building secure, observable, agentic AI applications.
+A public reference implementation for building secure, observable,
+enterprise agentic AI applications using synthetic data only.
 
 ## Sprint 1 scope
 
