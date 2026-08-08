@@ -1,4 +1,4 @@
-# Sprint 1 Checklist
+﻿# Sprint 1 Checklist
 
 ## Day 1 - Repository and standards
 - [ ] Create a private Git repository.
@@ -31,7 +31,7 @@
 - [ ] Push to the private Git repository.
 - [ ] Confirm the GitLab pipeline passes.
 - [ ] Review the architecture overview and ADRs.
-- [ ] Tag the baseline as `v0.1.0-week1`.
+- [ ] Tag the baseline as `v0.1.0-foundation`.
 - [ ] Record a two-minute demonstration.
 
 ## Sprint 1 acceptance criteria
@@ -40,3 +40,4 @@
 - `/health/ready` returns HTTP 200.
 - CI lint, typing, unit-test, coverage, and image-build jobs pass.
 - No secrets or internal production data exist in the repository.
+
