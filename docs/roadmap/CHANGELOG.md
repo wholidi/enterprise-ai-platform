@@ -74,18 +74,60 @@ Released: July 2026
 - Pull Request workflow
 - Initial architecture documentation
 
----
+# Unreleased – v0.3.0 Agent Runtime
 
-# Upcoming
+## Added
 
-## v0.3.0 – Agent Runtime
-
-Planned features:
+## Planned Sprint 3 capabilities
 
 - Agent Runtime
 - Execution Context
-- Planning Engine
-- Conversation State
+- Task/run lifecycle
 - Retry Policy
 - Timeout Handling
-- Runtime Unit Tests
+- Cancellation
+- Runtime Unit and Integration Tests
+
+### Sprint 3 Increment 1 – Agent Runtime Contracts
+
+- AgentTask contract
+- AgentRun contract
+- AgentStep contract
+- AgentExecutionContext
+- CancellationToken
+- Agent run and step state machines
+- Runtime exception hierarchy
+- Bounded step execution model
+- ADR-007 Agent Runtime Architecture
+- ADR-008 Explicit Agent Runtime State Machine
+- ADR-009 Bounded Agent Execution
+
+### Sprint 3 Increment 2 – Runtime Execution ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- AgentRuntime execution service
+- Deterministic ReferencePingAgent
+- Tool invocation exclusively through ToolInvocationService
+- AgentRun lifecycle execution
+- AgentStep lifecycle execution
+- Step-budget enforcement
+- Run timeout handling
+- Cancellation handling
+- Runtime failure normalization
+- Integration test using platform.ping
+
+### Engineering
+
+- 86 automated tests
+- 93.59% code coverage
+- Ruff passing
+- mypy strict passing
+
+Current branch:
+`feat/agent-runtime-execution`
+
+Latest implementation commit:
+`429e34c feat(agent-runtime): add bounded reference execution path`

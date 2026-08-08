@@ -49,7 +49,7 @@ using synthetic data only.
 |---------|------|--------|
 | Sprint 1 | Platform Foundation | ✅ Complete |
 | Sprint 2 | Enterprise MCP Framework | ✅ Complete |
-| Sprint 3 | Agent Runtime | 🚧 Next |
+| Sprint 3 | Agent Runtime | 🚧 In Progress |
 | Sprint 4 | Memory & Context | ⬜ Planned |
 | Sprint 5 | Evaluation Framework | ⬜ Planned |
 | Sprint 6 | Observability | ⬜ Planned |
@@ -138,6 +138,9 @@ Build the Enterprise Agent Runtime.
 - ADR-004 In-Memory Tool Registry
 - ADR-005 Pydantic Tool Contracts
 - ADR-006 Async Tool Execution
+- ADR-007 Agent Runtime Architecture
+- ADR-008 Explicit Agent Runtime State Machine
+- ADR-009 Bounded Agent Execution
 
 ---
 
@@ -148,7 +151,8 @@ Build the Enterprise Agent Runtime.
 | Ruff | ✅ |
 | mypy | ✅ |
 | pytest | ✅ |
-| Coverage | ✅ 91.13% |
+| Automated Tests | ✅ 76 passed |
+| Coverage | ✅ 94.01% |
 | MCP Inspector | ✅ |
 | GitHub Releases | ✅ |
 | Release Tag | ✅ v0.2.0-mcp-tools |
@@ -159,7 +163,7 @@ Build the Enterprise Agent Runtime.
 
 Current risks:
 
-- No agent runtime yet
+- Agent Runtime execution layer not yet complete
 - No persistence layer
 - No evaluation framework
 - No observability pipeline
@@ -201,9 +205,8 @@ Highlights
 
 ---
 
-# Next Milestone
-
 **Sprint 3 – Agent Runtime**
+Status: In Progress
 
 Target Outcome:
 
@@ -218,4 +221,56 @@ Enterprise Tool Platform
       │
       ▼
 Enterprise Tools
-```
+
+Increment 1 – Contracts and Lifecycle Foundation ✅
+- AgentTask
+- AgentRun
+- AgentStep
+- AgentExecutionContext
+- CancellationToken
+- AgentRunState
+- AgentStepState
+- AgentStepKind
+- Explicit state-transition validation
+- Runtime exception hierarchy
+- ADR-007 Agent Runtime Architecture
+- ADR-008 Explicit Agent Runtime State Machine
+- ADR-009 Bounded Agent Execution
+- 76 tests passing
+- 94.01% coverage
+
+Current branch:
+feat/agent-runtime-contracts
+
+Latest commit:
+6518471 feat(agent-runtime): add contracts and lifecycle foundation
+
+ Increment 2 – Runtime Execution ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- AgentRuntime execution service
+- Deterministic ReferencePingAgent
+- Tool invocation exclusively through ToolInvocationService
+- AgentRun lifecycle execution
+- AgentStep lifecycle execution
+- Step-budget enforcement
+- Run timeout handling
+- Cancellation handling
+- Runtime failure normalization
+- Integration test using platform.ping
+
+### Engineering
+
+- 86 automated tests
+- 93.59% code coverage
+- Ruff passing
+- mypy strict passing
+
+Current branch:
+`feat/agent-runtime-execution`
+
+Latest implementation commit:
+`429e34c feat(agent-runtime): add bounded reference execution path`
