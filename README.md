@@ -83,6 +83,39 @@ The long-term vision is to build an enterprise-grade AI platform capable of supp
                               ▼
                        Enterprise Tools
 ```
+ 
+ # Enterprise AI Platform
+
+                    ┌──────── MCP Clients ────────┐
+                    │                              │
+                    ▼                              │
+                MCP Server                         │
+                    │                              │
+                    ▼                              │
+              MCP Tool Adapter                     │
+                    │                              │
+                    └──────────────┐               │
+                                   ▼
+                            Tool Platform
+                       ┌────────────────────┐
+                       │ ToolDiscoveryService
+                       │ ToolInvocationService
+                       └────────────────────┘
+                                   ▲
+                                   │
+                              ToolExecutor
+                                   ▲
+                                   │
+                              AgentRuntime
+                                   ▲
+                                   │
+                         Planned / Executable Agent
+                                   ▲
+                                   │
+                         DeterministicPlanner
+                                   │
+                                   ▼
+                              AgentPlan
 
 ---
 
@@ -97,7 +130,7 @@ The long-term vision is to build an enterprise-grade AI platform capable of supp
 - Environment configuration
 - Health endpoints
 - Ruff
-- mypy (strict)
+- mypy (strict) apps/api/src
 - pytest
 - Coverage reporting
 
@@ -114,6 +147,32 @@ The long-term vision is to build an enterprise-grade AI platform capable of supp
 - MCP Server
 - MCP Adapter
 - MCP Inspector validation
+
+---
+
+## Sprint 3 – Agent Runtime
+
+Sprint 3 capabilities:
+- AgentTask / AgentRun / AgentStep
+- AgentExecutionContext
+- Explicit run and step state machines
+- Bounded max_steps execution
+- RetryPolicy
+- Cancellation
+- Run-level timeout
+- AgentRuntime
+- ToolExecutor boundary
+- DeterministicPlanner
+- AgentPlan / ToolPlanStep
+- PlannedAgent
+- deterministic multi-step reference plan
+- ADR-007 through ADR-010
+
+Quality:
+- Ruff passed
+- pytest: 109 passed
+- mypy --strict apps/api/src: passed on 25 source files
+- Coverage: 93.89% last reported in Increment 3
 
 ---
 
@@ -220,7 +279,7 @@ Run all quality gates.
 ```bash
 ruff check .
 
-mypy apps/api/src
+mypy --strict apps/api/src
 
 pytest --cov
 ```
