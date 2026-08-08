@@ -29,12 +29,153 @@ All implementations use synthetic data only.
 |---------|------|------|--------|
 | Sprint 1 | Platform Foundation | FastAPI, Docker, quality gates, engineering baseline | ✅ Complete |
 | Sprint 2 | Enterprise MCP Framework | Tool Registry, Tool Contracts, MCP Server | ✅ Complete |
-| Sprint 3 | Agent Runtime | Execute enterprise agents using registered tools | 🚧 Next |
+| Sprint 3 | Agent Runtime | Execute enterprise agents using registered tools | ✅ Complete |
 | Sprint 4 | Memory & Context | Conversation state, memory interfaces, execution context | ⬜ Planned |
 | Sprint 5 | Evaluation Framework | Quality evaluation, benchmarking, regression testing | ⬜ Planned |
 | Sprint 6 | Observability | Tracing, metrics, structured events, monitoring | ⬜ Planned |
 | Sprint 7 | Production Platform | Security, authentication, deployment, scalability | ⬜ Planned |
 | Sprint 8 | Enterprise AI Platform | End-to-end production reference implementation | ⬜ Planned |
+
+---
+
+# Sprint 3 Progress
+
+## Increment 1 – Contracts and Lifecycle Foundation ✅
+
+Completed:
+
+- AgentTask
+- AgentRun
+- AgentStep
+- AgentExecutionContext
+- CancellationToken
+- Agent run and step lifecycle states
+- Explicit state-transition validation
+- Runtime exception hierarchy
+- Bounded execution model
+- ADR-007 Agent Runtime Architecture
+- ADR-008 Explicit Agent Runtime State Machine
+- ADR-009 Bounded Agent Execution
+- 76 automated tests passing
+- 94.01% code coverage
+
+## Increment 2 – Runtime Execution ✅
+
+Status: ✅ Complete
+
+- AgentRuntime execution service
+- Deterministic ReferencePingAgent
+- Tool execution through ToolInvocationService
+- AgentRun lifecycle execution
+- AgentStep lifecycle execution
+- Step-budget enforcement
+- Run timeout handling
+- Cancellation handling
+- Runtime failure normalization
+- Integration with platform.ping
+
+Target flow:
+
+```text
+AgentTask
+    ↓
+AgentRuntime
+    ↓
+ReferencePingAgent
+    ↓
+ToolInvocationService
+    ↓
+platform.ping
+    ↓
+AgentStep.SUCCEEDED
+    ↓
+AgentRun.SUCCEEDED
+```
+
+## Increment 3 – Bounded Tool Retry Policy ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- RetryPolicy with bounded max_attempts
+- MAX_TOOL_ATTEMPTS platform guardrail
+- ToolExecutionError-only retry eligibility
+- New AgentStep for every retry attempt
+- Retry attempts consume the existing max_steps budget
+- Step-budget precedence over retry preference
+- Cancellation prevents additional attempts
+- Run-level timeout across retry sequences
+- Non-retryable tool-platform failures remain single-attempt
+- ReferencePingAgent remains retry-unaware
+- Tool execution remains exclusively through ToolInvocationService
+
+Validated lifecycle:
+
+```text
+Tool attempt 1
+    ↓
+AgentStep.FAILED
+    ↓
+bounded retry
+    ↓
+Tool attempt 2
+    ↓
+AgentStep.SUCCEEDED or TIMED_OUT
+    ↓
+AgentRun terminal state
+```
+
+
+## Increment 4 – Deterministic Plan Execution ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- Immutable `ToolPlanStep` and `AgentPlan` contracts
+- `DeterministicPlanner` protocol
+- Reusable sequential `PlannedAgent` adapter
+- Deterministic two-step reference planned agent
+- Logical plan steps remain distinct from runtime `AgentStep` attempts
+- Retries continue to create new `AgentStep` records and consume `max_steps`
+- Cancellation and run-level timeout continue to be owned by `AgentRuntime`
+- Tool execution remains exclusively `ToolExecutor` -> `ToolInvocationService`
+- ADR-010 Deterministic Agent Planning
+- 109 automated tests passing
+- Ruff passing
+- mypy strict on source passing
+
+Latest implementation commit:
+`cc0e5e8 feat(agent-runtime): add deterministic plan execution`
+
+## Increment 5 – Integration, Hardening, and Closure ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- Integrated Sprint 3 contracts, lifecycle, execution, retries, and deterministic planning into one documented runtime model
+- Confirmed runtime controls remain authoritative across planned multi-step execution
+- Confirmed tool execution remains exclusively `ToolExecutor` -> `ToolInvocationService`
+- Closed Sprint 3 at the validated 109-test baseline
+- Added Sprint 3 retrospective and closure documentation
+
+Sprint 3 exit criteria:
+
+- Bounded agent execution
+- Explicit run and step lifecycle states
+- Retry policy with physical-attempt accounting
+- Cooperative cancellation
+- Run-level timeout
+- Deterministic ordered planning
+- Protocol-independent tool invocation boundary
+- Ruff passing
+- mypy strict on source passing
+- pytest: 109 passed
+
+Explicitly deferred: LLM planning, branching, loops, parallel plans, replanning, memory, conversation persistence, and observability.
+
 
 ---
 
@@ -102,3 +243,16 @@ At the completion of Sprint 8 the repository will demonstrate:
 - Production engineering practices
 - High code quality
 - Complete technical documentation
+
+## Engineering
+
+- 109 automated tests
+- 93.89% code coverage (last reported in Increment 3)
+- Ruff passing
+- mypy strict passing
+
+Current branch:
+`feat/agent-runtime-execution`
+
+Latest implementation commit:
+`cc0e5e8 feat(agent-runtime): add deterministic plan execution`
