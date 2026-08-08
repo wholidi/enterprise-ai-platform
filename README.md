@@ -13,7 +13,7 @@
 
 **Current Release**
 
-**v0.2.0 – Enterprise MCP Framework**
+**v0.3.0 – Agent Run Timw**
 
 ### Completed
 
