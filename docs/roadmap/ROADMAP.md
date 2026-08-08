@@ -126,6 +126,24 @@ AgentStep.SUCCEEDED or TIMED_OUT
 AgentRun terminal state
 ```
 
+
+## Increment 4 – Deterministic Plan Execution 🚧
+
+Scope:
+
+- Immutable `ToolPlanStep` and `AgentPlan` contracts
+- `DeterministicPlanner` protocol
+- Reusable sequential `PlannedAgent` adapter
+- Deterministic two-step reference planned agent
+- Logical plan steps remain distinct from runtime `AgentStep` attempts
+- Retries continue to create new `AgentStep` records and consume `max_steps`
+- Cancellation and run-level timeout continue to be owned by `AgentRuntime`
+- Tool execution remains exclusively `ToolExecutor` -> `ToolInvocationService`
+- ADR-010 Deterministic Agent Planning
+
+Explicitly deferred: LLM planning, branching, loops, parallel plans, replanning, memory, conversation persistence, and observability.
+
+
 ---
 
 # Platform Evolution

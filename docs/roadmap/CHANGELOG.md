@@ -83,6 +83,7 @@ Released: July 2026
 - Agent Runtime
 - Execution Context
 - Task/run lifecycle
+- Deterministic Planning
 - Retry Policy
 - Timeout Handling
 - Cancellation
@@ -161,3 +162,27 @@ Current branch:
 
 Latest implementation commit:
 532c14b (HEAD -> feat/agent-runtime-execution) feat(agent-runtime): add bounded tool retry policy
+
+### Sprint 3 Increment 4 – Deterministic Plan Execution 🚧
+
+Status: 🚧 In Progress
+
+Implemented scope:
+
+- Immutable `ToolPlanStep` and `AgentPlan` planning contracts
+- `DeterministicPlanner` protocol
+- Sequential `PlannedAgent` adapter over the existing `ToolExecutor`
+- Deterministic two-step reference planned agent
+- Logical plan-step versus physical `AgentStep` attempt separation
+- Existing retry attempts continue to consume the single `max_steps` budget
+- Existing cooperative cancellation and run-level timeout span plan execution
+- Tool invocation remains exclusively through `ToolInvocationService`
+- ADR-010 Deterministic Agent Planning
+
+Explicitly deferred:
+
+- LLM planning and provider SDKs
+- branching, loops, parallel plans, and dynamic replanning
+- memory and conversation persistence
+- multi-agent orchestration
+- observability and production security work

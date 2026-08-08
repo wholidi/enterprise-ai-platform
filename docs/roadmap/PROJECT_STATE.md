@@ -120,7 +120,7 @@ Build the Enterprise Agent Runtime.
 - Execution Context
 - Task Lifecycle
 - Planning Engine
-- Conversation State
+- Conversation State (Sprint 4 – Memory & Context)
 - Retry Policy
 - Timeout Handling
 - Cancellation
@@ -141,6 +141,7 @@ Build the Enterprise Agent Runtime.
 - ADR-007 Agent Runtime Architecture
 - ADR-008 Explicit Agent Runtime State Machine
 - ADR-009 Bounded Agent Execution
+- ADR-010 Deterministic Agent Planning
 
 ---
 
@@ -305,3 +306,20 @@ Current branch:
 
 Latest implementation commit:
 532c14b (HEAD -> feat/agent-runtime-execution) feat(agent-runtime): add bounded tool retry policy
+
+## Increment 4 – Deterministic Plan Execution 🚧
+
+Status: 🚧 In Progress
+
+Scope:
+
+- Immutable `ToolPlanStep` and `AgentPlan` contracts
+- `DeterministicPlanner` protocol
+- Sequential `PlannedAgent` execution through the existing `ToolExecutor`
+- Deterministic multi-step reference plan
+- Logical plan operations remain separate from physical runtime `AgentStep` attempts
+- Existing retry, `max_steps`, cancellation, and timeout semantics remain unchanged
+- Tool invocation remains exclusively through `ToolInvocationService`
+- ADR-010 Deterministic Agent Planning
+
+Out of scope: LLMs, prompt frameworks, memory, conversation persistence, dynamic replanning, branching, parallel execution, and multi-agent orchestration.
