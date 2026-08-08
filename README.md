@@ -312,7 +312,7 @@ Current quality metrics:
 |----------|-------------|
 | v0.1.0 | Platform Foundation |
 | v0.2.0 | Enterprise MCP Framework |
-| v0.3.0 | Agent Run Timw |
+| v0.3.0 | Agent Run Time |
 ---
 
 # Documentation
