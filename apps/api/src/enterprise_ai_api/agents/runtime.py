@@ -20,7 +20,7 @@ from enterprise_ai_api.agents.states import (
     validate_run_transition,
     validate_step_transition,
 )
-from enterprise_ai_api.tools.exceptions import ToolPlatformError
+from enterprise_ai_api.tools.exceptions import ToolExecutionError, ToolPlatformError
 from enterprise_ai_api.tools.invocation import ToolInvocationService
 
 ToolExecutor = Callable[[str, dict[str, Any]], Awaitable[dict[str, Any]]]
@@ -60,87 +60,104 @@ class AgentRuntime:
         run = self._start_run(run)
 
         async def execute_tool(tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
-            if context.cancellation.is_cancelled:
-                raise AgentCancelledError("Agent run was cancelled.")
-            if len(steps) >= context.max_steps:
-                raise AgentStepLimitExceededError(
-                    f"Agent run exceeded max_steps={context.max_steps}."
+            for attempt in range(1, context.retry_policy.max_attempts + 1):
+                if context.cancellation.is_cancelled:
+                    raise AgentCancelledError("Agent run was cancelled.")
+                if len(steps) >= context.max_steps:
+                    raise AgentStepLimitExceededError(
+                        f"Agent run exceeded max_steps={context.max_steps}."
+                    )
+
+                step = AgentStep(
+                    step_id=f"{context.run_id}:step:{len(steps) + 1}",
+                    run_id=context.run_id,
+                    sequence=len(steps) + 1,
+                    kind=AgentStepKind.TOOL,
                 )
+                step = self._start_step(step)
+                steps.append(step)
 
-            step = AgentStep(
-                step_id=f"{context.run_id}:step:{len(steps) + 1}",
-                run_id=context.run_id,
-                sequence=len(steps) + 1,
-                kind=AgentStepKind.TOOL,
-            )
-            step = self._start_step(step)
-            steps.append(step)
-
-            invocation_task = asyncio.create_task(
-                self._invocation_service.invoke(tool_name, arguments)
-            )
-            cancellation_task = asyncio.create_task(context.cancellation.wait())
-
-            try:
-                done, _ = await asyncio.wait(
-                    {invocation_task, cancellation_task},
-                    return_when=asyncio.FIRST_COMPLETED,
+                invocation_task = asyncio.create_task(
+                    self._invocation_service.invoke(tool_name, arguments)
                 )
-                if cancellation_task in done:
-                    invocation_task.cancel()
-                    await asyncio.gather(invocation_task, return_exceptions=True)
+                cancellation_task = asyncio.create_task(context.cancellation.wait())
+
+                try:
+                    done, _ = await asyncio.wait(
+                        {invocation_task, cancellation_task},
+                        return_when=asyncio.FIRST_COMPLETED,
+                    )
+                    if cancellation_task in done:
+                        invocation_task.cancel()
+                        await asyncio.gather(invocation_task, return_exceptions=True)
+                        steps[-1] = self._finish_step(
+                            steps[-1],
+                            AgentStepState.CANCELLED,
+                            error=AgentError(
+                                code="RUN_CANCELLED",
+                                message="Agent run was cancelled.",
+                            ),
+                        )
+                        raise AgentCancelledError("Agent run was cancelled.")
+
+                    result = await invocation_task
+
+                    cancellation_task.cancel()
+                    await asyncio.gather(cancellation_task, return_exceptions=True)
+
+                except ToolExecutionError as exc:
                     steps[-1] = self._finish_step(
                         steps[-1],
-                        AgentStepState.CANCELLED,
+                        AgentStepState.FAILED,
                         error=AgentError(
-                            code="RUN_CANCELLED",
-                            message="Agent run was cancelled.",
+                            code="TOOL_INVOCATION_FAILED",
+                            message="Tool invocation failed.",
                         ),
                     )
-                    raise AgentCancelledError("Agent run was cancelled.")
+                    if attempt == context.retry_policy.max_attempts:
+                        raise AgentExecutionError("Tool invocation failed.") from exc
+                    continue
+                except ToolPlatformError as exc:
+                    steps[-1] = self._finish_step(
+                        steps[-1],
+                        AgentStepState.FAILED,
+                        error=AgentError(
+                            code="TOOL_INVOCATION_FAILED",
+                            message="Tool invocation failed.",
+                        ),
+                    )
+                    raise AgentExecutionError("Tool invocation failed.") from exc
+                except asyncio.CancelledError:
+                    if not invocation_task.done():
+                        invocation_task.cancel()
+                    cancellation_task.cancel()
+                    await asyncio.gather(
+                        invocation_task,
+                        cancellation_task,
+                        return_exceptions=True,
+                    )
+                    if steps[-1].state is AgentStepState.RUNNING:
+                        steps[-1] = self._finish_step(
+                            steps[-1],
+                            AgentStepState.TIMED_OUT,
+                            error=AgentError(
+                                code="RUN_TIMED_OUT",
+                                message="Agent run timed out.",
+                            ),
+                        )
+                    raise
+                finally:
+                    if not cancellation_task.done():
+                        cancellation_task.cancel()
 
-                cancellation_task.cancel()
-                await asyncio.gather(cancellation_task, return_exceptions=True)
-                result = await invocation_task
-            except ToolPlatformError as exc:
                 steps[-1] = self._finish_step(
                     steps[-1],
-                    AgentStepState.FAILED,
-                    error=AgentError(
-                        code="TOOL_INVOCATION_FAILED",
-                        message="Tool invocation failed.",
-                    ),
+                    AgentStepState.SUCCEEDED,
+                    output=result,
                 )
-                raise AgentExecutionError("Tool invocation failed.") from exc
-            except asyncio.CancelledError:
-                if not invocation_task.done():
-                    invocation_task.cancel()
-                cancellation_task.cancel()
-                await asyncio.gather(
-                    invocation_task,
-                    cancellation_task,
-                    return_exceptions=True,
-                )
-                if steps[-1].state is AgentStepState.RUNNING:
-                    steps[-1] = self._finish_step(
-                        steps[-1],
-                        AgentStepState.TIMED_OUT,
-                        error=AgentError(
-                            code="RUN_TIMED_OUT",
-                            message="Agent run timed out.",
-                        ),
-                    )
-                raise
-            finally:
-                if not cancellation_task.done():
-                    cancellation_task.cancel()
+                return result
 
-            steps[-1] = self._finish_step(
-                steps[-1],
-                AgentStepState.SUCCEEDED,
-                output=result,
-            )
-            return result
+            raise AssertionError("RetryPolicy must allow at least one tool attempt.")
 
         try:
             if task.agent_name != agent.name:

@@ -59,3 +59,9 @@ def test_cancellation_token_wait_completes_after_cancel() -> None:
         await token.wait()
 
     asyncio.run(scenario())
+
+
+def test_execution_context_uses_single_attempt_retry_policy_by_default() -> None:
+    context = AgentExecutionContext(run_id="run-1", max_steps=1)
+
+    assert context.retry_policy.max_attempts == 1

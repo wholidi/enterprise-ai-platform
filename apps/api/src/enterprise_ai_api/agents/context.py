@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass, field
 
+from enterprise_ai_api.agents.retry import RetryPolicy
+
 MAX_AGENT_STEPS = 100
 
 
@@ -31,6 +33,7 @@ class AgentExecutionContext:
     max_steps: int
     timeout_seconds: float | None = None
     cancellation: CancellationToken = field(default_factory=CancellationToken)
+    retry_policy: RetryPolicy = field(default_factory=RetryPolicy)
 
     def __post_init__(self) -> None:
         if not self.run_id:
