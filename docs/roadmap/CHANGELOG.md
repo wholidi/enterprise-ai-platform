@@ -163,11 +163,11 @@ Current branch:
 Latest implementation commit:
 532c14b (HEAD -> feat/agent-runtime-execution) feat(agent-runtime): add bounded tool retry policy
 
-### Sprint 3 Increment 4 – Deterministic Plan Execution 🚧
+### Sprint 3 Increment 4 – Deterministic Plan Execution ✅
 
-Status: 🚧 In Progress
+Status: ✅ Complete
 
-Implemented scope:
+Completed:
 
 - Immutable `ToolPlanStep` and `AgentPlan` planning contracts
 - `DeterministicPlanner` protocol
@@ -179,6 +179,18 @@ Implemented scope:
 - Tool invocation remains exclusively through `ToolInvocationService`
 - ADR-010 Deterministic Agent Planning
 
+### Engineering
+
+- 109 automated tests
+- Ruff passing
+- mypy strict on source passing
+
+Current branch:
+`feat/agent-runtime-execution`
+
+Latest implementation commit:
+`cc0e5e8 feat(agent-runtime): add deterministic plan execution`
+
 Explicitly deferred:
 
 - LLM planning and provider SDKs
@@ -186,3 +198,30 @@ Explicitly deferred:
 - memory and conversation persistence
 - multi-agent orchestration
 - observability and production security work
+
+
+### Sprint 3 Increment 5 – Integration, Hardening, and Closure ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- Reconciled Sprint 3 documentation with the completed deterministic planning implementation
+- Confirmed the Agent Runtime remains protocol-independent and above `ToolInvocationService`
+- Confirmed planned agents execute only through the supplied `ToolExecutor`
+- Confirmed logical `ToolPlanStep` operations remain distinct from physical runtime `AgentStep` attempts
+- Confirmed retry attempts continue to consume the single run-level `max_steps` budget
+- Confirmed cancellation and run-level timeout semantics remain centralized in `AgentRuntime`
+- Confirmed Sprint 4 concerns remain deferred: memory, conversation persistence, and context evolution
+- Recorded Sprint 3 retrospective and closure criteria
+
+### Engineering
+
+- 109 automated tests passing
+- Ruff passing
+- mypy strict on source passing
+- No new runtime execution path introduced during closure
+
+Sprint 3 status: ✅ Complete
+
+Release status: v0.3.0 remains unreleased until the repository release/tag workflow is executed.

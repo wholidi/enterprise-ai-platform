@@ -49,7 +49,7 @@ using synthetic data only.
 |---------|------|--------|
 | Sprint 1 | Platform Foundation | ✅ Complete |
 | Sprint 2 | Enterprise MCP Framework | ✅ Complete |
-| Sprint 3 | Agent Runtime | 🚧 In Progress |
+| Sprint 3 | Agent Runtime | ✅ Complete |
 | Sprint 4 | Memory & Context | ⬜ Planned |
 | Sprint 5 | Evaluation Framework | ⬜ Planned |
 | Sprint 6 | Observability | ⬜ Planned |
@@ -152,8 +152,8 @@ Build the Enterprise Agent Runtime.
 | Ruff | ✅ |
 | mypy | ✅ |
 | pytest | ✅ |
-| Automated Tests | ✅ 96 passed |
-| Coverage | ✅ 93.89% |
+| Automated Tests | ✅ 109 passed |
+| Coverage | 93.89% (last reported in Increment 3) |
 | MCP Inspector | ✅ |
 | GitHub Releases | ✅ |
 | Release Tag | ✅ v0.2.0-mcp-tools |
@@ -164,7 +164,6 @@ Build the Enterprise Agent Runtime.
 
 Current risks:
 
-- Agent Runtime execution layer not yet complete
 - No persistence layer
 - No evaluation framework
 - No observability pipeline
@@ -207,7 +206,7 @@ Highlights
 ---
 
 **Sprint 3 – Agent Runtime**
-Status: In Progress
+Status: ✅ Complete
 
 Target Outcome:
 
@@ -307,11 +306,11 @@ Current branch:
 Latest implementation commit:
 532c14b (HEAD -> feat/agent-runtime-execution) feat(agent-runtime): add bounded tool retry policy
 
-## Increment 4 – Deterministic Plan Execution 🚧
+## Increment 4 – Deterministic Plan Execution ✅
 
-Status: 🚧 In Progress
+Status: ✅ Complete
 
-Scope:
+Completed:
 
 - Immutable `ToolPlanStep` and `AgentPlan` contracts
 - `DeterministicPlanner` protocol
@@ -321,5 +320,35 @@ Scope:
 - Existing retry, `max_steps`, cancellation, and timeout semantics remain unchanged
 - Tool invocation remains exclusively through `ToolInvocationService`
 - ADR-010 Deterministic Agent Planning
+- 109 automated tests passing
+- Ruff passing
+- mypy strict on source passing
+
+Current branch:
+`feat/agent-runtime-execution`
+
+Latest implementation commit:
+`cc0e5e8 feat(agent-runtime): add deterministic plan execution`
+
+## Increment 5 – Integration, Hardening, and Closure ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- Reconciled runtime, planning, retry, and lifecycle semantics across Sprint 3
+- Verified the single tool execution boundary remains `ToolExecutor` -> `ToolInvocationService`
+- Preserved the single run-level `max_steps` attempt budget across retries and planned execution
+- Preserved cancellation and timeout ownership in `AgentRuntime`
+- Preserved terminal-step immutability and explicit lifecycle transitions
+- Closed Sprint 3 without adding LLM planning, persistence, memory, branching, parallel execution, or multi-agent orchestration
+- Added Sprint 3 retrospective and closure record
+
+Engineering baseline at closure:
+
+- 109 automated tests passing
+- Ruff passing
+- mypy strict on source passing
+- Coverage was not re-reported for Increment 4/5; last reported value remains 93.89% from Increment 3
 
 Out of scope: LLMs, prompt frameworks, memory, conversation persistence, dynamic replanning, branching, parallel execution, and multi-agent orchestration.
