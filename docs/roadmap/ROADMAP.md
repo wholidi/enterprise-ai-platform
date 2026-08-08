@@ -59,7 +59,7 @@ Completed:
 - 76 automated tests passing
 - 94.01% code coverage
 
-## Increment 2 – Runtime Execution 🚧
+## Increment 2 – Runtime Execution ✅
 
 Status: ✅ Complete
 
@@ -90,6 +90,40 @@ platform.ping
 AgentStep.SUCCEEDED
     ↓
 AgentRun.SUCCEEDED
+```
+
+## Increment 3 – Bounded Tool Retry Policy ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- RetryPolicy with bounded max_attempts
+- MAX_TOOL_ATTEMPTS platform guardrail
+- ToolExecutionError-only retry eligibility
+- New AgentStep for every retry attempt
+- Retry attempts consume the existing max_steps budget
+- Step-budget precedence over retry preference
+- Cancellation prevents additional attempts
+- Run-level timeout across retry sequences
+- Non-retryable tool-platform failures remain single-attempt
+- ReferencePingAgent remains retry-unaware
+- Tool execution remains exclusively through ToolInvocationService
+
+Validated lifecycle:
+
+```text
+Tool attempt 1
+    ↓
+AgentStep.FAILED
+    ↓
+bounded retry
+    ↓
+Tool attempt 2
+    ↓
+AgentStep.SUCCEEDED or TIMED_OUT
+    ↓
+AgentRun terminal state
 ```
 
 ---
@@ -161,8 +195,8 @@ At the completion of Sprint 8 the repository will demonstrate:
 
 ## Engineering
 
-- 86 automated tests
-- 93.59% code coverage
+- 96 automated tests
+- 93.89% code coverage
 - Ruff passing
 - mypy strict passing
 
@@ -171,3 +205,4 @@ Current branch:
 
 Latest implementation commit:
 `429e34c feat(agent-runtime): add bounded reference execution path`
+532c14b (HEAD -> feat/agent-runtime-execution) feat(agent-runtime): add bounded tool retry policy

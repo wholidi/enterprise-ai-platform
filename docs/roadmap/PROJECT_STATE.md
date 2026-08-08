@@ -151,8 +151,8 @@ Build the Enterprise Agent Runtime.
 | Ruff | ✅ |
 | mypy | ✅ |
 | pytest | ✅ |
-| Automated Tests | ✅ 76 passed |
-| Coverage | ✅ 94.01% |
+| Automated Tests | ✅ 96 passed |
+| Coverage | ✅ 93.89% |
 | MCP Inspector | ✅ |
 | GitHub Releases | ✅ |
 | Release Tag | ✅ v0.2.0-mcp-tools |
@@ -274,3 +274,34 @@ Current branch:
 
 Latest implementation commit:
 `429e34c feat(agent-runtime): add bounded reference execution path`
+
+ Increment 3 – Bounded Tool Retry Policy ✅
+
+Status: ✅ Complete
+
+Completed:
+
+- RetryPolicy with bounded max_attempts
+- MAX_TOOL_ATTEMPTS platform guardrail
+- ToolExecutionError-only retry eligibility
+- New AgentStep for each retry attempt
+- Retry attempts consume max_steps
+- Step-budget precedence over retry preference
+- Cancellation prevents additional attempts
+- Run-level timeout across retry sequences
+- Non-retryable ToolPlatformError failures remain single-attempt
+- ReferencePingAgent remains retry-unaware
+- Tool invocation remains exclusively through ToolInvocationService
+
+### Engineering
+
+- 96 automated tests
+- 93.89% code coverage
+- Ruff passing
+- mypy strict passing
+
+Current branch:
+`feat/agent-runtime-execution`
+
+Latest implementation commit:
+532c14b (HEAD -> feat/agent-runtime-execution) feat(agent-runtime): add bounded tool retry policy
