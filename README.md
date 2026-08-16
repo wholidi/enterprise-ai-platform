@@ -13,7 +13,7 @@
 
 **Current Release**
 
-**v0.3.0 – Agent Run Timw**
+**v0.3.0 – Agent Run Time**
 
 ### Completed
 
